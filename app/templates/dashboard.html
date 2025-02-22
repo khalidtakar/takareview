@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>Welcome, {{ current_user.username }}</h1>
+        <div class="subscription-info">
+            <p>Current Plan: <span class="plan-badge {{ current_user.subscription_type|default('basic') }}">
+                {{ current_user.subscription_type|default('Basic')|title }}
+            </span></p>
+            {% if current_user.subscription_type|default('basic') == 'basic' %}
+            <a href="{{ url_for('main.index') }}#pricing" class="btn btn-upgrade">Upgrade to Premium</a>
+            {% else %}
+            <a href="{{ url_for('auth.cancel_premium') }}" class="btn btn-cancel">Cancel Premium</a>
+            {% endif %}
+            <a href="{{ url_for('auth.change_password') }}" class="btn btn-outline">Change Password</a>
+        </div>
+    </div>
+    
+    <div class="dashboard-grid">
+        <!-- Quick Stats -->
+        <div class="dashboard-card">
+            <h2>Sentiment Overview</h2>
+            <div class="stat-grid">
+                <div class="stat-item">
+                    <div class="stat-number">85%</div>
+                    <div class="stat-label">Positive</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">15%</div>
+                    <div class="stat-label">Negative</div>
+                </div>
+            </div>
+            <div class="dashboard-actions">
+                <a href="#" class="btn btn-primary">View Details</a>
+                <a href="#" class="btn btn-outline">Export</a>
+            </div>
+        </div>
+
+        <!-- Sentiment Donut Chart -->
+        <div class="dashboard-card">
+            <h2>Sentiment Distribution</h2>
+            <div class="donut-chart">
+                <div class="chart-center">
+                    <span class="percentage">60%</span>
+                    <span class="label">Positive</span>
+                </div>
+            </div>
+            <div class="chart-legend">
+                <div class="legend-item">
+                    <span class="dot positive"></span>
+                    <span>Positive</span>
+                </div>
+                <div class="legend-item">
+                    <span class="dot negative"></span>
+                    <span>Negative</span>
+                </div>
+                <div class="legend-item">
+                    <span class="dot neutral"></span>
+                    <span>Neutral</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sentiment Timeline -->
+        <div class="dashboard-card full-width">
+            <h2>Sentiment Trends</h2>
+            <div class="timeline-chart">
+                <canvas id="sentimentTimeline"></canvas>
+            </div>
+        </div>
+
+        <!-- Recent Responses -->
+        <div class="dashboard-card full-width">
+            <h2>Recent Responses</h2>
+            <div class="responses-grid">
+                <div class="response-card positive">
+                    <div class="response-header">
+                        <span class="sentiment-tag">Positive</span>
+                        <span class="response-date">2 hours ago</span>
+                    </div>
+                    <p class="response-text">"Great service! The team was very responsive and helpful."</p>
+                </div>
+                <div class="response-card negative">
+                    <div class="response-header">
+                        <span class="sentiment-tag">Negative</span>
+                        <span class="response-date">5 hours ago</span>
+                    </div>
+                    <p class="response-text">"Had some issues with the loading time, needs improvement."</p>
+                </div>
+                <div class="response-card neutral">
+                    <div class="response-header">
+                        <span class="sentiment-tag">Neutral</span>
+                        <span class="response-date">1 day ago</span>
+                    </div>
+                    <p class="response-text">"The product works as expected, nothing special."</p>
+                </div>
+            </div>
+            <div class="dashboard-actions">
+                <a href="#" class="btn btn-primary">View All Responses</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+    const textColor = isDarkMode ? '#ffffff' : '#000000';
+    const gridColor = isDarkMode ? '#44475a' : '#e0e0e0';
+    const positiveColor = '#50fa7b';  // Green for rising trend
+    const negativeColor = '#ff5555';  // Red for falling trend
+    const pointColor = '#bd93f9';  // Dracula purple for points
+    
+    const ctx = document.getElementById('sentimentTimeline').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Sentiment Trend',
+                data: [65, 70, 75, 72, 80, 85],
+                tension: 0.4,
+                borderWidth: 3,
+                fill: false,
+                pointBackgroundColor: pointColor,
+                pointBorderColor: pointColor,
+                pointRadius: 6,
+                pointHoverRadius: 8,
+                segment: {
+                    borderColor: ctx => {
+                        const current = ctx.p1.parsed.y;
+                        const previous = ctx.p0.parsed.y;
+                        return current >= previous ? positiveColor : negativeColor;
+                    }
+                }
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: textColor,
+                        font: {
+                            size: 14,
+                            weight: 'bold'
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: gridColor,
+                        drawBorder: false
+                    },
+                    ticks: {
+                        color: textColor,
+                        font: {
+                            size: 12,
+                            weight: '500'
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        color: gridColor,
+                        drawBorder: false
+                    },
+                    ticks: {
+                        color: textColor,
+                        font: {
+                            size: 12,
+                            weight: '500'
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Update chart colors when theme changes
+    document.addEventListener('themeChanged', function() {
+        const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+        const textColor = isDarkMode ? '#ffffff' : '#000000';
+        const gridColor = isDarkMode ? '#44475a' : '#e0e0e0';
+        
+        chart.options.plugins.legend.labels.color = textColor;
+        chart.options.scales.x.ticks.color = textColor;
+        chart.options.scales.y.ticks.color = textColor;
+        chart.options.scales.x.grid.color = gridColor;
+        chart.options.scales.y.grid.color = gridColor;
+        chart.data.datasets[0].pointBackgroundColor = pointColor;
+        chart.data.datasets[0].pointBorderColor = pointColor;
+        chart.update();
+    });
+});
+</script>
+{% endblock %} 

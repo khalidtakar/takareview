@@ -1,0 +1,353 @@
+:root {
+    --card-background: var(--dracula-current-line);
+    --card-border: var(--dracula-comment);
+}
+
+.dashboard-container {
+    background: var(--section-bg);
+    min-height: 100vh;
+    padding: 2rem;
+    margin-top: 120px;
+    transition: background-color 0.3s ease;
+}
+
+.dashboard-header {
+    margin-bottom: 2rem;
+}
+
+.dashboard-header h1 {
+    color: var(--text-color);
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.dashboard-header p {
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.dashboard-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+}
+
+.dashboard-card h2 {
+    color: var(--text-color);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.dashboard-card p {
+    color: var(--text-color);
+    opacity: 0.8;
+    margin-bottom: 1.5rem;
+}
+
+.dashboard-card.full-width {
+    grid-column: 1 / -1;
+}
+
+/* Stats Section */
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 1rem;
+    background: var(--background-color);
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-blue);
+    margin-bottom: 0.5rem;
+}
+
+[data-theme="dark"] .stat-number {
+    color: var(--dracula-purple);
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+/* Donut Chart */
+.donut-chart {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 2rem auto;
+    border-radius: 50%;
+    background: conic-gradient(
+        var(--dracula-green) 0% 60%,
+        var(--dracula-red) 60% 80%,
+        var(--dracula-comment) 80% 100%
+    );
+}
+
+[data-theme="dark"] .donut-chart {
+    background: conic-gradient(
+        var(--dracula-green) 0% 60%,
+        var(--dracula-red) 60% 80%,
+        var(--dracula-purple) 80% 100%
+    );
+}
+
+.chart-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px;
+    height: 150px;
+    background: var(--card-bg);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+.percentage {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.label {
+    font-size: 1rem;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+/* Chart Legend */
+.chart-legend {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.dot.positive { background-color: var(--dracula-green); }
+.dot.negative { background-color: var(--dracula-red); }
+.dot.neutral { background-color: var(--dracula-comment); }
+
+[data-theme="dark"] .dot.neutral { background-color: var(--dracula-purple); }
+
+/* Timeline Chart */
+.timeline-chart {
+    height: 300px;
+    margin: 1rem 0;
+}
+
+/* Recent Responses */
+.responses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.response-card {
+    background: var(--background-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.response-card:hover {
+    transform: translateY(-3px);
+}
+
+.response-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.sentiment-tag {
+    padding: 0.25rem 0.75rem;
+    border-radius: 16px;
+    font-size: 0.875rem;
+}
+
+.response-card.positive .sentiment-tag {
+    background: var(--dracula-green);
+    color: var(--background-color);
+}
+
+.response-card.negative .sentiment-tag {
+    background: var(--dracula-red);
+    color: var(--background-color);
+}
+
+.response-card.neutral .sentiment-tag {
+    background: var(--dracula-comment);
+    color: var(--background-color);
+}
+
+.response-date {
+    font-size: 0.875rem;
+    color: var(--text-color);
+    opacity: 0.7;
+}
+
+.response-text {
+    color: var(--text-color);
+    line-height: 1.5;
+}
+
+/* Subscription Info */
+.subscription-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.plan-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.plan-badge.basic {
+    background: var(--primary-blue);
+    color: white;
+}
+
+[data-theme="dark"] .plan-badge.basic {
+    background: var(--dracula-purple);
+    color: var(--dracula-background);
+}
+
+.plan-badge.premium {
+    background: var(--dracula-yellow);
+    color: var(--dracula-background);
+}
+
+/* Buttons */
+.dashboard-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    min-width: 120px;
+    text-align: center;
+}
+
+.btn-primary {
+    background: var(--primary-blue);
+    color: white;
+    border: 2px solid var(--primary-blue);
+}
+
+.btn-primary:hover {
+    background: #3f4fd3;
+}
+
+[data-theme="dark"] .btn-primary {
+    background: var(--dracula-purple);
+    border-color: var(--dracula-purple);
+}
+
+[data-theme="dark"] .btn-primary:hover {
+    background: var(--dracula-pink);
+}
+
+.btn-outline {
+    color: var(--primary-blue);
+    border: 2px solid var(--primary-blue);
+    background: transparent;
+}
+
+.btn-outline:hover {
+    background: var(--primary-blue);
+    color: white;
+}
+
+[data-theme="dark"] .btn-outline {
+    color: var(--dracula-purple);
+    border-color: var(--dracula-purple);
+}
+
+[data-theme="dark"] .btn-outline:hover {
+    background: var(--dracula-purple);
+    color: white;
+}
+
+.btn-upgrade {
+    background: var(--dracula-green);
+    color: var(--background-color);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+
+.btn-upgrade:hover {
+    background: var(--dracula-cyan);
+}
+
+.btn-cancel {
+    background: var(--dracula-red);
+    color: var(--background-color);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+
+.btn-cancel:hover {
+    background: #ff6e6e;
+}
+
+.dashboard-card h3 {
+    color: var(--dracula-cyan);
+} 

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Pricing - TakaReview{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pricing.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="pricing-container">
+    <h1>Choose Your Plan</h1>
+    <div class="pricing-cards">
+        <div class="pricing-card">
+            <h2>Basic</h2>
+            <p class="price">$0/month</p>
+            <ul>
+                <li>Basic sentiment analysis</li>
+                <li>Percentage breakdown</li>
+                <li>Basic visualization</li>
+                <li>Limited API calls</li>
+            </ul>
+            <button class="btn-primary">Get Started</button>
+        </div>
+        
+        <div class="pricing-card featured">
+            <h2>Premium</h2>
+            <p class="price">$29/month</p>
+            <ul>
+                <li>Advanced sentiment analysis</li>
+                <li>Detailed breakdowns</li>
+                <li>AI-powered insights</li>
+                <li>Unlimited API calls</li>
+                <li>Priority support</li>
+                <li>Custom reporting</li>
+            </ul>
+            <button class="btn-primary">Upgrade Now</button>
+        </div>
+    </div>
+</div>
+{% endblock %} 

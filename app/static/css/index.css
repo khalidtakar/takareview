@@ -1,0 +1,478 @@
+/* Hero Section */
+.hero {
+    background: linear-gradient(135deg, #1a237e 0%, #ffffff 100%);
+    padding: 6rem 2rem;
+    text-align: center;
+    margin-top: 120px; /* Updated space for taller header */
+    transition: background 0.3s ease;
+}
+
+[data-theme="dark"] .hero {
+    background: linear-gradient(135deg, var(--dracula-purple) 0%, var(--background-color) 100%);
+}
+
+.hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+    color: #1a237e; /* Navy text */
+    font-weight: 700;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    color: #333;
+    font-weight: 500;
+}
+
+/* Pricing Section */
+.pricing-section {
+    background-color: var(--background-color);
+    padding: 5rem 2rem;
+}
+
+.pricing-section h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: #1a237e;
+    font-weight: 700;
+}
+
+.pricing-cards {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.pricing-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 2rem;
+    width: 350px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.pricing-card:hover {
+    transform: translateY(-5px);
+}
+
+.pricing-card.featured {
+    border: 2px solid var(--primary-blue);
+    position: relative;
+}
+
+[data-theme="dark"] .pricing-card.featured {
+    border-color: var(--dracula-purple);
+}
+
+.card-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.card-header h3 {
+    color: #1a237e;
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.price {
+    font-size: 3rem;
+    font-weight: bold;
+    color: var(--primary-blue);
+}
+
+[data-theme="dark"] .price {
+    color: var(--dracula-purple);
+}
+
+.price span {
+    font-size: 1rem;
+    color: var(--text-color);
+    opacity: 0.7;
+}
+
+.features {
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0;
+}
+
+.features li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+.features li:last-child {
+    border-bottom: none;
+}
+
+/* Buttons */
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    min-width: 120px;
+    text-align: center;
+}
+
+.btn-primary {
+    background: var(--nav-text);
+    color: var(--nav-bg);
+    border: 2px solid var(--nav-text);
+}
+
+.btn-primary:hover {
+    background: transparent;
+    color: var(--nav-text);
+}
+
+.btn-secondary {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    border: 2px solid transparent;
+}
+
+.btn-secondary:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.btn-outline {
+    border: 2px solid var(--nav-text);
+    color: var(--nav-text);
+    background: transparent;
+}
+
+.btn-outline:hover {
+    background: var(--nav-text);
+    color: var(--nav-bg);
+}
+
+/* Add these new styles */
+.section-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+}
+
+/* Features Section */
+.features-section {
+    background-color: var(--section-bg);
+    color: var(--text-color);
+    padding: 5rem 2rem;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.feature-card {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+/* About Section */
+.about-section {
+    background-color: var(--section-bg);
+    color: var(--text-color);
+    padding: 5rem 2rem;
+}
+
+.about-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+.about-text h3 {
+    margin: 2rem 0 1rem;
+}
+
+.about-image img {
+    width: 100%;
+    max-width: 500px;
+}
+
+/* Contact Section */
+.contact-section {
+    background-color: var(--section-bg);
+    color: var(--text-color);
+    padding: 5rem 2rem;
+}
+
+.contact-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+}
+
+.contact-info {
+    padding-right: 2rem;
+}
+
+.contact-details {
+    margin-top: 2rem;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.contact-icon {
+    font-size: 1.5rem;
+}
+
+.contact-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.contact-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--card-bg);
+    color: var(--text-color);
+}
+
+.contact-form textarea {
+    height: 150px;
+    resize: vertical;
+}
+
+[data-theme="dark"] .hero h1,
+[data-theme="dark"] .pricing-section h2,
+[data-theme="dark"] .card-header h3 {
+    color: white;
+}
+
+[data-theme="dark"] .hero-subtitle,
+[data-theme="dark"] .features li,
+[data-theme="dark"] .price span {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.pricing-btn {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-align: center;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    margin-top: 2rem;
+}
+
+.pricing-btn.btn-primary {
+    background: var(--primary-blue);
+    color: white;
+    border: 2px solid var(--primary-blue);
+}
+
+.pricing-btn.btn-primary:hover {
+    background: transparent;
+    color: var(--primary-blue);
+}
+
+[data-theme="dark"] .pricing-btn.btn-primary {
+    background: var(--dracula-purple);
+    border-color: var(--dracula-purple);
+    color: white;
+}
+
+[data-theme="dark"] .pricing-btn.btn-primary:hover {
+    background: transparent;
+    color: var(--dracula-purple);
+}
+
+/* Testimonials Section */
+.testimonials-section {
+    background-color: var(--section-bg);
+    padding: 5rem 2rem;
+}
+
+.testimonials-section h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: var(--text-color);
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.testimonial-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-5px);
+}
+
+.testimonial-content {
+    margin-bottom: 1.5rem;
+}
+
+.testimonial-content p {
+    color: var(--text-color);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    font-style: italic;
+}
+
+.testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.author-avatar {
+    width: 50px;
+    height: 50px;
+    background: var(--primary-blue);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+[data-theme="dark"] .author-avatar {
+    background: var(--dracula-purple);
+}
+
+.author-info h4 {
+    color: var(--text-color);
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+}
+
+.author-info p {
+    color: var(--text-color);
+    opacity: 0.7;
+    font-size: 0.9rem;
+}
+
+/* CTA Banner */
+.cta-banner {
+    background: var(--dracula-green);
+    color: white;
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+[data-theme="dark"] .cta-banner {
+    background: var(--dracula-purple);
+}
+
+.cta-banner h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.cta-banner p {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.cta-btn {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    min-width: 200px;
+}
+
+.cta-banner .btn-primary {
+    background: white;
+    color: var(--dracula-green);
+    border: 2px solid white;
+}
+
+.cta-banner .btn-primary:hover {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+}
+
+.cta-banner .btn-outline {
+    border: 2px solid white;
+    color: white;
+}
+
+.cta-banner .btn-outline:hover {
+    background: white;
+    color: var(--dracula-green);
+}
+
+[data-theme="dark"] .cta-banner .btn-primary {
+    color: var(--dracula-purple);
+}
+
+[data-theme="dark"] .cta-banner .btn-primary:hover {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+}
+
+[data-theme="dark"] .cta-banner .btn-outline:hover {
+    color: white;
+    background: var(--dracula-purple);
+} 
