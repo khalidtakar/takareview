@@ -13,7 +13,7 @@
                 {{ current_user.subscription_type|default('Basic')|title }}
             </span></p>
             {% if current_user.subscription_type|default('basic') == 'basic' %}
-            <a href="{{ url_for('main.index') }}#pricing" class="btn btn-upgrade">Upgrade to Premium</a>
+            <a href="{{ url_for('auth.upgrade_premium') }}" class="btn btn-upgrade">Upgrade to Premium</a>
             {% else %}
             <a href="{{ url_for('auth.cancel_premium') }}" class="btn btn-cancel">Cancel Premium</a>
             {% endif %}

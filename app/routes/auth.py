@@ -44,6 +44,24 @@ def logout():
     logout_user()
     return redirect(url_for('main.index'))
 
+@auth_bp.route('/cancel-premium', methods=['GET'])
+@login_required
+def cancel_premium():
+    if current_user.subscription_type == 'premium':
+        current_user.subscription_type = 'basic'
+        db.session.commit()
+        flash('Your premium subscription has been cancelled.', 'success')
+    return redirect(url_for('main.dashboard'))
+
+@auth_bp.route('/upgrade-premium', methods=['GET'])
+@login_required
+def upgrade_premium():
+    if current_user.subscription_type == 'basic':
+        current_user.subscription_type = 'premium'
+        db.session.commit()
+        flash('Welcome to Premium! You now have access to all premium features.', 'success')
+    return redirect(url_for('main.dashboard'))
+
 @auth_bp.route('/change-password', methods=['GET', 'POST'])
 @login_required
 def change_password():
