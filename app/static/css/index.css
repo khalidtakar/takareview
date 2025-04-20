@@ -1,0 +1,616 @@
+/* Hero Section */
+.hero {
+    background: linear-gradient(135deg, #1a237e 0%, #ffffff 100%);
+    padding: 6rem 2rem;
+    text-align: center;
+    margin-top: 120px; /* Updated space for taller header */
+    transition: background 0.3s ease;
+    min-height: 60vh;    /* Ensure minimum height for hero section */
+}
+
+[data-theme="dark"] .hero {
+    background: linear-gradient(135deg, var(--dracula-purple) 0%, var(--background-color) 100%);
+}
+
+.hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+    color: #1a237e; /* Navy text */
+    font-weight: 700;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    color: #333;
+    font-weight: 500;
+}
+
+/* Pricing Section */
+.pricing-section {
+    background-color: var(--background-color);
+    padding: 2rem;
+    position: relative;
+    margin-top: 5px;  /* Add small gap between sections */
+}
+
+.pricing-section h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;  /* Reduced from 2rem */
+    color: #1a237e;
+    font-weight: 700;
+}
+
+.pricing-cards {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;    /* Reduced from 2rem */
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-top: 2rem;  /* Reduced from 3rem */
+}
+
+.pricing-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 2rem;
+    width: 350px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.pricing-card:hover {
+    transform: translateY(-5px);
+}
+
+.pricing-card.featured {
+    border: 2px solid var(--primary-blue);
+    position: relative;
+}
+
+[data-theme="dark"] .pricing-card.featured {
+    border-color: var(--dracula-purple);
+}
+
+.card-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.card-header h3 {
+    color: #1a237e;
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.price {
+    font-size: 3rem;
+    font-weight: bold;
+    color: var(--primary-blue);
+}
+
+[data-theme="dark"] .price {
+    color: var(--dracula-purple);
+}
+
+.price span {
+    font-size: 1rem;
+    color: var(--text-color);
+    opacity: 0.7;
+}
+
+.features {
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0;
+}
+
+.features li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+.features li:last-child {
+    border-bottom: none;
+}
+
+/* Buttons */
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    min-width: 120px;
+    text-align: center;
+}
+
+.btn-primary {
+    background: var(--nav-text);
+    color: var(--nav-bg);
+    border: 2px solid var(--nav-text);
+}
+
+.btn-primary:hover {
+    background: transparent;
+    color: var(--nav-bg);
+}
+
+.btn-secondary {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    border: 2px solid transparent;
+}
+
+.btn-secondary:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.btn-outline {
+    border: 2px solid var(--nav-text);
+    color: var(--nav-text);
+    background: transparent;
+}
+
+.btn-outline:hover {
+    background: var(--nav-text);
+    color: var(--nav-bg);
+}
+
+/* Add these new styles */
+.section-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;  /* Reduced from 2rem */
+}
+
+/* Features Section */
+.features-section {
+    background-color: var(--section-bg);
+    color: var(--text-color);
+    padding: 2rem;
+    position: relative;
+    margin-top: 5px;  /* Add small gap between sections */
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;    /* Reduced from 2rem */
+    margin-top: 2rem;  /* Reduced from 3rem */
+}
+
+.feature-card {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+/* About Section */
+.about-section {
+    background-color: var(--section-bg);
+    color: var(--text-color);
+    padding: 2rem;
+    position: relative;
+    margin-top: 5px;  /* Add small gap between sections */
+}
+
+.about-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;      /* Reduced from 4rem */
+    align-items: center;
+    margin-top: 2rem;  /* Reduced from 3rem */
+}
+
+.about-text h3 {
+    margin: 2rem 0 1rem;
+}
+
+.about-image img {
+    width: 100%;
+    max-width: 500px;
+}
+
+/* Contact Section */
+.contact-section {
+    background-color: var(--section-bg);
+    color: var(--text-color);
+    padding: 2rem;
+    position: relative;
+    margin-top: 5px;  /* Add small gap between sections */
+}
+
+.contact-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;      /* Reduced from 3rem */
+    margin-top: 2rem;  /* Reduced from 3rem */
+}
+
+.contact-info {
+    padding-right: 2rem;
+}
+
+.contact-details {
+    margin-top: 2rem;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.contact-icon {
+    font-size: 1.5rem;
+}
+
+.contact-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.contact-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--card-bg);
+    color: var(--text-color);
+}
+
+.contact-form textarea {
+    height: 150px;
+    resize: vertical;
+}
+
+.contact-form .btn-primary {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: 2px solid var(--primary-color);
+    padding: 0.8rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.contact-form .btn-primary:hover {
+    background-color: transparent;
+    color: var(--primary-color);
+}
+
+.contact-form .btn-primary i {
+    font-size: 1rem;
+}
+
+/* Dark mode specific styles */
+[data-theme="dark"] .contact-form .btn-primary {
+    background-color: var(--primary-color);
+    color: #ffffff;
+}
+
+[data-theme="dark"] .contact-form .btn-primary:hover {
+    background-color: transparent;
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Light mode specific styles */
+[data-theme="light"] .contact-form .btn-primary {
+    background-color: var(--primary-color);
+    color: #ffffff;
+}
+
+[data-theme="light"] .contact-form .btn-primary:hover {
+    background-color: transparent;
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+[data-theme="dark"] .hero h1,
+[data-theme="dark"] .pricing-section h2,
+[data-theme="dark"] .card-header h3 {
+    color: white;
+}
+
+[data-theme="dark"] .hero-subtitle,
+[data-theme="dark"] .features li,
+[data-theme="dark"] .price span {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.pricing-btn {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-align: center;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    margin-top: 2rem;
+}
+
+.pricing-btn.btn-primary {
+    background: var(--primary-blue);
+    color: white;
+    border: 2px solid var(--primary-blue);
+}
+
+.pricing-btn.btn-primary:hover {
+    background: transparent;
+    color: var(--primary-blue);
+}
+
+[data-theme="dark"] .pricing-btn.btn-primary {
+    background: var(--dracula-purple);
+    border-color: var(--dracula-purple);
+    color: white;
+}
+
+[data-theme="dark"] .pricing-btn.btn-primary:hover {
+    background: transparent;
+    color: var(--dracula-purple);
+}
+
+/* Testimonials Section */
+.testimonials-section {
+    background-color: var(--section-bg);
+    padding: 5rem 2rem;
+}
+
+.testimonials-section h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: var(--text-color);
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.testimonial-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-5px);
+}
+
+.testimonial-content {
+    margin-bottom: 1.5rem;
+}
+
+.testimonial-content p {
+    color: var(--text-color);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    font-style: italic;
+}
+
+.testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.author-avatar {
+    width: 50px;
+    height: 50px;
+    background: var(--primary-blue);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+[data-theme="dark"] .author-avatar {
+    background: var(--dracula-purple);
+}
+
+.author-info h4 {
+    color: var(--text-color);
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+}
+
+.author-info p {
+    color: var(--text-color);
+    opacity: 0.7;
+    font-size: 0.9rem;
+}
+
+/* CTA Banner */
+.cta-banner {
+    /* Light mode gradient - light blue to cream (reversed) */
+    background: linear-gradient(135deg, #e6f3ff 0%, #fff5e6 100%);
+    color: #2a2a2a;
+    padding: 4rem 2rem;
+    text-align: center;
+    transition: background 0.3s ease;
+}
+
+[data-theme="dark"] .cta-banner {
+    /* Dark mode gradient - steel grey to dracula purple (reversed and adjusted ratio) */
+    background: linear-gradient(135deg, #2d3436 0%, #2d3436 60%, var(--dracula-purple) 100%);
+    color: #ffffff;
+}
+
+.cta-banner h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: inherit;
+}
+
+.cta-banner p {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+/* Update button colors to match new gradient */
+.cta-banner .btn-primary {
+    background: #4a90e2;
+    color: #ffffff;
+    border: 2px solid #4a90e2;
+}
+
+.cta-banner .btn-primary:hover {
+    background: transparent;
+    color: #4a90e2;
+}
+
+.cta-banner .btn-outline {
+    border: 2px solid #4a90e2;
+    color: #4a90e2;
+}
+
+.cta-banner .btn-outline:hover {
+    background: #4a90e2;
+    color: #ffffff;
+}
+
+/* Dark mode button adjustments */
+[data-theme="dark"] .cta-banner .btn-primary {
+    background: var(--dracula-purple);
+    color: #ffffff;
+    border: 2px solid var(--dracula-purple);
+}
+
+[data-theme="dark"] .cta-banner .btn-primary:hover {
+    background: transparent;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .cta-banner .btn-outline {
+    border: 2px solid #ffffff;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .cta-banner .btn-outline:hover {
+    background: #ffffff;
+    color: var(--dracula-purple);
+}
+
+/* Keep responsive design adjustments */
+@media (max-width: 968px) {
+    .about-content {
+        gap: 2rem;  /* Reduced from 3rem */
+    }
+    
+    .features-grid {
+        gap: 1rem;  /* Reduced from 1.5rem */
+    }
+}
+
+/* Dashboard preview hover effect */
+.dashboard-preview {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    margin: 2rem auto;
+    perspective: 1000px;
+    transition: transform 0.3s ease;
+}
+
+.theme-image {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    transform: rotateY(-4deg) rotateX(2deg) rotateZ(-1deg);
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.2),
+        0 15px 20px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.dashboard-preview:hover .theme-image {
+    transform: rotateY(-2deg) rotateX(1deg) rotateZ(-0.5deg) translateY(-10px);
+    box-shadow: 
+        0 30px 60px rgba(0, 0, 0, 0.25),
+        0 25px 30px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+
+/* Add floating animation */
+@keyframes float {
+    0% {
+        transform: translateY(0) rotateY(-4deg) rotateX(2deg) rotateZ(-1deg);
+    }
+    50% {
+        transform: translateY(-10px) rotateY(-4deg) rotateX(2deg) rotateZ(-1deg);
+    }
+    100% {
+        transform: translateY(0) rotateY(-4deg) rotateX(2deg) rotateZ(-1deg);
+    }
+}
+
+.theme-image {
+    animation: float 6s ease-in-out infinite;
+}
+
+/* Keep your existing theme-based display rules */
+.dark-image {
+    display: none;
+}
+
+.light-image {
+    display: block;
+}
+
+[data-theme="dark"] .dark-image {
+    display: block;
+}
+
+[data-theme="dark"] .light-image {
+    display: none;
+} 

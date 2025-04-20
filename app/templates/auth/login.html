@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <img src="{{ url_for('static', filename='images/logo-black.jpg') }}" alt="TakaReview Logo" class="auth-logo">
+            <h1>Welcome Back</h1>
+            <p>Sign in to your account</p>
+        </div>
+        
+        <form method="POST" action="" class="auth-form">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.email.label(class="form-label") }}
+                {{ form.email(class="form-control", placeholder="Enter your email") }}
+                {% for error in form.email.errors %}
+                    <div class="error-message">{{ error }}</div>
+                {% endfor %}
+            </div>
+            
+            <div class="form-group">
+                {{ form.password.label(class="form-label") }}
+                {{ form.password(class="form-control", placeholder="Enter your password") }}
+                {% for error in form.password.errors %}
+                    <div class="error-message">{{ error }}</div>
+                {% endfor %}
+            </div>
+            
+            <div class="remember-me">
+                <label class="checkbox-container">
+                    {{ form.remember_me() }}
+                    <span class="checkmark"></span>
+                    Remember me
+                </label>
+                <a href="{{ url_for('auth.reset_password') }}" class="forgot-password">Forgot Password?</a>
+            </div>
+            
+            <div class="auth-buttons">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+
+        <div class="auth-divider">
+            <span>or continue with</span>
+        </div>
+
+        <div class="social-login">
+            <button onclick="signInWithGoogle()" class="btn btn-social btn-google">
+                <img src="{{ url_for('static', filename='images/google-icon.svg') }}" alt="Google" width="20">
+                Continue with Google
+            </button>
+            <button onclick="signInWithTwitter()" class="btn btn-social btn-x">
+                <img src="{{ url_for('static', filename='images/x-logo.svg') }}" alt="X" width="20">
+                Continue with Twitter/X
+            </button>
+        </div>
+
+        <div class="auth-links">
+            Don't have an account? <a href="{{ url_for('auth.register') }}">Get Started</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Initialize Supabase client
+    const supabaseUrl = "{{ config.SUPABASE_URL }}";
+    const supabaseKey = "{{ config.SUPABASE_KEY }}";
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    async function signInWithGoogle() {
+        try {
+            const { data, error } = await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: `${window.location.origin}/auth/callback`,
+                    queryParams: {
+                        access_type: 'offline',
+                        prompt: 'consent'
+                    }
+                }
+            });
+            
+            if (error) {
+                console.error('Google sign in error:', error.message);
+                alert('Error signing in with Google. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error signing in with Google. Please try again.');
+        }
+    }
+
+    async function signInWithTwitter() {
+        try {
+            const { data, error } = await supabase.auth.signInWithOAuth({
+                provider: 'twitter',
+                options: {
+                    redirectTo: `${window.location.origin}/auth/callback`
+                }
+            });
+            
+            if (error) {
+                console.error('Twitter sign in error:', error.message);
+                alert('Error signing in with X. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error signing in with X. Please try again.');
+        }
+    }
+
+    // Handle hash fragment for access token
+    window.addEventListener('load', function() {
+        const hash = window.location.hash;
+        if (hash && hash.includes('access_token=')) {
+            const params = new URLSearchParams(hash.substring(1));
+            const access_token = params.get('access_token');
+            if (access_token) {
+                window.location.href = `/auth/callback?access_token=${access_token}`;
+            }
+        }
+    });
+</script>
+{% endblock %} 

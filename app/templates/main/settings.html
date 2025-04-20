@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - TakaReview{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/settings.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="settings-container">
+    <div class="settings-header">
+        <h1>Help & Support</h1>
+    </div>
+
+    <div class="settings-content">
+        <!-- Getting Started Guide -->
+        <div class="settings-section">
+            <h2>Getting Started Guide</h2>
+            <div class="guide-content">
+                <div class="guide-step">
+                    <h3>1. Dashboard Overview</h3>
+                    <p>Your dashboard is your command center. Here you'll find:</p>
+                    <ul>
+                        <li>Sentiment distribution of your analyzed content</li>
+                        <li>Recent analysis results</li>
+                        <li>Trend analysis showing sentiment patterns over time</li>
+                    </ul>
+                </div>
+                <div class="guide-step">
+                    <h3>2. Analyzing Content</h3>
+                    <p>To analyze new content:</p>
+                    <ul>
+                        <li>Navigate to the analysis section</li>
+                        <li>Enter or paste your text content</li>
+                        <li>Click "Analyze" to get instant sentiment results</li>
+                        <li>View detailed breakdowns including confidence scores and reasoning</li>
+                    </ul>
+                </div>
+                <div class="guide-step">
+                    <h3>3. Understanding Results</h3>
+                    <p>Your analysis results include:</p>
+                    <ul>
+                        <li>Overall sentiment (Positive, Negative, or Neutral)</li>
+                        <li>Confidence score showing reliability of the analysis</li>
+                        <li>Detailed reasoning behind the sentiment classification</li>
+                        <li>Visual representations through charts and graphs</li>
+                    </ul>
+                </div>
+                <div class="guide-step">
+                    <h3>4. Premium Features</h3>
+                    <p>Premium users get access to:</p>
+                    <ul>
+                        <li>Unlimited sentiment analysis</li>
+                        <li>Advanced analytics and trend tracking</li>
+                        <li>Detailed sentiment breakdowns</li>
+                        <li>Priority support and custom reporting</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQs Section -->
+        <div class="settings-section">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>How do I upgrade to Premium?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        You can upgrade to Premium from your profile page by clicking the "Upgrade to Premium" button. Premium gives you access to unlimited analysis, advanced features, and priority support.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>What features are included in Premium?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Premium includes unlimited sentiment analysis, advanced analytics, detailed sentiment breakdowns, trend tracking, priority support, and custom reporting features.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>How accurate is the sentiment analysis?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Our sentiment analysis uses advanced AI models with over 90% accuracy. Each analysis includes a confidence score to indicate the reliability of the result.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Can I export my analysis results?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Yes! You can export your analysis results in both CSV and PDF formats. The exports include sentiment scores, timestamps, and detailed breakdowns of your analyzed content.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>How do I interpret the confidence scores?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Confidence scores range from 0-100% and indicate how certain the AI is about its sentiment classification. Higher scores (>80%) indicate very reliable results, while lower scores suggest more ambiguous content.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>What types of content can I analyze?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        You can analyze any text content including social media posts, customer reviews, comments, and feedback. The system works best with English language content.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>How do I track sentiment trends over time?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        The dashboard includes interactive charts showing sentiment trends over daily, weekly, and monthly periods. Premium users get access to more detailed trend analysis and custom date ranges.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help Section -->
+        <div class="settings-section">
+            <h2>Need More Help?</h2>
+            <div class="help-content">
+                <div class="help-item">
+                    <h3>Contact Us</h3>
+                    <p>Have questions or need assistance? Our support team is here to help.</p>
+                    <a href="{{ url_for('main.index') }}#contact" class="help-link">Contact Support <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="help-item">
+                    <h3>Documentation</h3>
+                    <p>Check out our detailed documentation for in-depth guides and tutorials.</p>
+                    <a href="#" class="help-link">View Documentation <i class="fas fa-book"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleFAQ(element) {
+    const answer = element.nextElementSibling;
+    const icon = element.querySelector('i');
+    
+    if (answer.style.maxHeight) {
+        answer.style.maxHeight = null;
+        icon.style.transform = 'rotate(0deg)';
+    } else {
+        answer.style.maxHeight = answer.scrollHeight + "px";
+        icon.style.transform = 'rotate(180deg)';
+    }
+}
+</script>
+{% endblock %} 

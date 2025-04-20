@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/export.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="export-container">
+    <div class="export-header">
+        <h1><i class="fas fa-file-export"></i> Export Analyses</h1>
+        <p class="subtitle">Choose your export preferences below</p>
+    </div>
+
+    <div class="export-options-container">
+        <form id="exportForm" class="export-form">
+            <!-- Data Range Selection -->
+            <div class="option-group">
+                <h3>Select Data Range</h3>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="dataRange" value="recent" checked>
+                        <span class="radio-label">Recent Analyses (Last 30 days)</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="dataRange" value="all">
+                        <span class="radio-label">All Analyses</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Export Format Selection -->
+            <div class="option-group">
+                <h3>Select Export Format</h3>
+                <div class="format-options">
+                    <label class="format-option">
+                        <input type="radio" name="format" value="pdf" checked>
+                        <div class="format-icon">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <span>PDF Document</span>
+                    </label>
+                    <label class="format-option">
+                        <input type="radio" name="format" value="csv">
+                        <div class="format-icon">
+                            <i class="fas fa-file-csv"></i>
+                        </div>
+                        <span>CSV Spreadsheet</span>
+                    </label>
+                    <label class="format-option">
+                        <input type="radio" name="format" value="png">
+                        <div class="format-icon">
+                            <i class="fas fa-file-image"></i>
+                        </div>
+                        <span>PNG Image</span>
+                    </label>
+                    <label class="format-option">
+                        <input type="radio" name="format" value="copy">
+                        <div class="format-icon">
+                            <i class="fas fa-copy"></i>
+                        </div>
+                        <span>Copy to Clipboard</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Export Options -->
+            <div class="option-group">
+                <h3>Select Data to Include</h3>
+                <div class="checkbox-group">
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="includeScores" checked>
+                        <span>Sentiment Scores</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="includeTimestamps" checked>
+                        <span>Timestamps</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" name="includeContent" checked>
+                        <span>Content Text</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="export-actions">
+                <button type="submit" class="export-button">
+                    <i class="fas fa-file-export"></i> Export Data
+                </button>
+                <button type="button" class="export-button cancel" onclick="window.history.back()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Hidden canvas for image export -->
+<canvas id="exportCanvas" style="display: none;"></canvas>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="{{ url_for('static', filename='js/export.js') }}"></script>
+{% endblock %} 

@@ -1,0 +1,216 @@
+.analyse-container {
+    background: var(--section-bg);
+    min-height: 100vh;
+    padding: 2rem;
+    margin-top: 120px;
+}
+
+.analyse-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.analyse-header h1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.analyse-header h1 i {
+    font-size: 2rem;
+    color: var(--primary-color);
+}
+
+.analyse-header .subtitle {
+    color: var(--text-color);
+    opacity: 0.8;
+    font-size: 1.1rem;
+}
+
+.analyse-form-container {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.analyse-form .form-group {
+    margin-bottom: 1rem;
+}
+
+.analyse-form .form-control {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    background: var(--background-color);
+    color: var(--text-color);
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.btn-analyze {
+    background: var(--dracula-purple);
+    color: var(--background-color);
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-analyze:hover {
+    transform: translateY(-2px);
+    background: var(--dracula-pink);
+}
+
+.result-container {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.sentiment-card {
+    text-align: center;
+}
+
+.sentiment-result, .confidence-result {
+    margin: 1rem 0;
+    font-size: 1.2rem;
+}
+
+.analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.analysis-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+.analysis-card:hover {
+    transform: translateY(-3px);
+}
+
+.analysis-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.sentiment-tag {
+    padding: 0.25rem 0.75rem;
+    border-radius: 16px;
+    font-size: 0.875rem;
+}
+
+.analysis-card.positive .sentiment-tag {
+    background: var(--dracula-green);
+    color: var(--background-color);
+}
+
+.analysis-card.negative .sentiment-tag {
+    background: var(--dracula-red);
+    color: var(--background-color);
+}
+
+.analysis-card.neutral .sentiment-tag {
+    background: var(--dracula-purple);
+    color: var(--background-color);
+}
+
+.confidence-bar {
+    height: 4px;
+    background: var(--border-color);
+    border-radius: 2px;
+    margin-top: 1rem;
+    position: relative;
+}
+
+.confidence-fill {
+    height: 100%;
+    background: var(--dracula-purple);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.confidence-fill[data-confidence] {
+    width: var(--confidence-width);
+}
+
+.confidence-text {
+    position: absolute;
+    right: 0;
+    top: -20px;
+    font-size: 0.875rem;
+    color: var(--text-color);
+}
+
+.history-container {
+    margin-top: 3rem;
+}
+
+.history-container h2 {
+    color: var(--text-color);
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.tweet-text {
+    color: var(--text-color);
+    margin: 1rem 0;
+    line-height: 1.5;
+}
+
+.analysis-date {
+    color: var(--text-color);
+    opacity: 0.7;
+    font-size: 0.875rem;
+}
+
+.error {
+    color: var(--dracula-red);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: block;
+}
+
+/* Result container theme-specific styles */
+.result-container.positive {
+    border-left: 4px solid var(--dracula-green);
+}
+
+.result-container.negative {
+    border-left: 4px solid var(--dracula-red);
+}
+
+.result-container.neutral {
+    border-left: 4px solid var(--dracula-purple);
+} 

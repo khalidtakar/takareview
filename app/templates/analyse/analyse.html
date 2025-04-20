@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/analyse.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="analyse-page">
+    <div class="analyse-container">
+        <div class="analyse-header">
+            <h1><i class="fa-solid fa-robot"></i> Sentiment Analysis</h1>
+            <p class="subtitle">Analyse the sentiment of any tweet</p>
+        </div>
+
+        <div class="analyse-form-container">
+            <form id="tweetForm" method="POST" action="{{ url_for('analyse.analyse') }}" class="analyse-form">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.tweet_text(class="form-control", placeholder="Enter tweet text...") }}
+                    {% for error in form.tweet_text.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                <div class="form-actions">
+                    {{ form.submit(class="btn btn-analyze", value="Analyse Sentiment") }}
+                </div>
+            </form>
+        </div>
+
+        <div id="result" class="result-container" style="display: none;">
+            <div class="sentiment-card">
+                <h3>Analysis Result</h3>
+                <div class="sentiment-result">
+                    <span class="sentiment-label">Sentiment:</span>
+                    <span id="sentimentValue" class="sentiment-value"></span>
+                </div>
+                <div class="confidence-result">
+                    <span class="confidence-label">Confidence:</span>
+                    <span id="confidenceValue" class="confidence-value"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="history-container">
+            <h2>Recent Analyses</h2>
+            <div id="analysisGrid" class="analysis-grid">
+                {% for analysis in recent_analyses %}
+                <div class="analysis-card {{ analysis.sentiment }}">
+                    <div class="analysis-header">
+                        <span class="sentiment-tag">{{ analysis.sentiment|title }}</span>
+                        <span class="analysis-date">{{ analysis.formatted_date }}</span>
+                    </div>
+                    <p class="tweet-text">{{ analysis.tweet_text }}</p>
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" data-confidence="{{ analysis.confidence_percentage }}"></div>
+                        <span class="confidence-text">{{ analysis.confidence_percentage }}% confidence</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('tweetForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    fetch('{{ url_for("analyse.analyse") }}', {
+        method: 'POST',
+        body: new FormData(this),
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Show result
+        document.getElementById('result').style.display = 'block';
+        document.getElementById('sentimentValue').textContent = data.sentiment;
+        document.getElementById('confidenceValue').textContent = data.confidence + '%';
+        document.getElementById('result').className = 'result-container ' + data.sentiment;
+
+        // Add new analysis to grid
+        const analysisGrid = document.getElementById('analysisGrid');
+        const newAnalysis = document.createElement('div');
+        newAnalysis.className = `analysis-card ${data.sentiment}`;
+        newAnalysis.innerHTML = `
+            <div class="analysis-header">
+                <span class="sentiment-tag">${data.sentiment}</span>
+                <span class="analysis-date">Just now</span>
+            </div>
+            <p class="tweet-text">${document.getElementById('tweet_text').value}</p>
+            <div class="confidence-bar">
+                <div class="confidence-fill" style="width: ${data.confidence}%"></div>
+                <span class="confidence-text">${data.confidence}% confidence</span>
+            </div>
+        `;
+        analysisGrid.insertBefore(newAnalysis, analysisGrid.firstChild);
+    });
+});
+</script>
+{% endblock %} 

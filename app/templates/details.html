@@ -1,0 +1,407 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/details.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="details-container">
+    <div class="details-header">
+        <h1><i class="fa-solid fa-robot"></i> Sentiment Analysis Details</h1>
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline">Back to Dashboard</a>
+    </div>
+
+    {% if error %}
+    <div class="error-message">{{ error }}</div>
+    {% else %}
+    <div class="details-grid">
+        <!-- Model Information -->
+        <div class="details-card">
+            <h2><i class="fas fa-robot"></i> Model Information</h2>
+            <p>This dashboard uses the CardiffNLP Twitter RoBERTa Base Sentiment Model, specifically trained for social media sentiment analysis.</p>
+            <div class="sentiment-types">
+                <div class="sentiment-type positive">
+                    <h3>Positive ({{ sentiment_percentages.positive }}%)</h3>
+                    <p>Expressing approval, optimism, or satisfaction</p>
+                </div>
+                <div class="sentiment-type negative">
+                    <h3>Negative ({{ sentiment_percentages.negative }}%)</h3>
+                    <p>Expressing criticism, disappointment, or dissatisfaction</p>
+                </div>
+                <div class="sentiment-type neutral">
+                    <h3>Neutral ({{ sentiment_percentages.neutral }}%)</h3>
+                    <p>Factual or balanced statements without strong emotion</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Distribution Explanation -->
+        <div class="details-card">
+            <h2><i class="fas fa-chart-pie"></i> Sentiment Distribution</h2>
+            <div class="donut-chart">
+                <canvas id="distributionChart"></canvas>
+            </div>
+            <div class="distribution-explanation">
+                <p>The donut chart visualizes the proportion of different sentiments in your analyses:</p>
+                <ul>
+                    <li><span class="dot positive"></span> Green: Positive responses ({{ sentiment_percentages.positive }}%)</li>
+                    <li><span class="dot negative"></span> Red: Negative responses ({{ sentiment_percentages.negative }}%)</li>
+                    <li><span class="dot neutral"></span> Purple: Neutral responses ({{ sentiment_percentages.neutral }}%)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Confidence Scores -->
+        <div class="details-card">
+            <h2><i class="fas fa-check-circle"></i> Understanding Confidence Scores</h2>
+            <div class="confidence-levels">
+                <div class="confidence-level high">
+                    <h3>90-100%</h3>
+                    <p>Very high confidence - The model is extremely certain about its classification</p>
+                </div>
+                <div class="confidence-level medium-high">
+                    <h3>70-89%</h3>
+                    <p>High confidence - The model is quite sure about its prediction</p>
+                </div>
+                <div class="confidence-level medium">
+                    <h3>50-69%</h3>
+                    <p>Moderate confidence - The model shows reasonable certainty</p>
+                </div>
+                <div class="confidence-level low">
+                    <h3><50%</h3>
+                    <p>Low confidence - The model is less certain about its classification</p>
+                </div>
+            </div>
+        </div>
+
+         <!-- Word Clouds -->
+         <div class="details-card full-width">
+            <h2><i class="fas fa-cloud"></i> Common Words by Sentiment</h2>
+            <div class="word-clouds-container">
+                <div class="word-cloud-section">
+                    <h3>Positive Words</h3>
+                    <div class="word-cloud positive-cloud" id="positiveCloud"></div>
+                </div>
+                <div class="word-cloud-section">
+                    <h3>Negative Words</h3>
+                    <div class="word-cloud negative-cloud" id="negativeCloud"></div>
+                </div>
+                <div class="word-cloud-section">
+                    <h3>Neutral Words</h3>
+                    <div class="word-cloud neutral-cloud" id="neutralCloud"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timeline Analysis -->
+        <div class="details-card full-width">
+            <h2><i class="fas fa-chart-line"></i> Timeline Analysis</h2>
+            <div class="chart-header">
+                <select id="timeRangeFilter" class="chart-filter">
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                </select>
+            </div>
+            <div class="timeline-chart">
+                <canvas id="timelineChart"></canvas>
+            </div>
+            <div class="timeline-explanation">
+                <p>The sentiment trends chart shows how sentiments have changed over time:</p>
+                <ul>
+                    <li>Rising lines indicate increasing sentiment of that type</li>
+                    <li>Falling lines show decreasing trends</li>
+                    <li>Each point represents the percentage at that specific time</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-cloud@1.2.5/build/d3.layout.cloud.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    try {
+        console.log('Initializing details page charts...');
+        
+        // Initialize distribution chart
+        const distributionCtx = document.getElementById('distributionChart').getContext('2d');
+        new Chart(distributionCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Positive', 'Negative', 'Neutral'],
+                datasets: [{
+                    data: [
+                        {{ sentiment_percentages.positive }},
+                        {{ sentiment_percentages.negative }},
+                        {{ sentiment_percentages.neutral }}
+                    ],
+                    backgroundColor: [
+                        'rgb(80, 250, 123)',
+                        'rgb(255, 85, 85)',
+                        'rgb(189, 147, 249)'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                cutout: '70%'
+            }
+        });
+
+        // Initialize timeline chart
+        console.log('Parsing trend data...');
+        const trendData = {{ trend_data|tojson|safe }};
+        console.log('Trend data:', trendData);
+        let timelineChart = null;
+
+        function initTimelineChart(timeRange) {
+            console.log(`Initializing timeline chart for ${timeRange}...`);
+            const data = trendData[timeRange];
+            if (!data) {
+                console.error(`No data found for time range: ${timeRange}`);
+                return;
+            }
+            console.log(`Data for ${timeRange}:`, data);
+            
+            const ctx = document.getElementById('timelineChart').getContext('2d');
+            if (!ctx) {
+                console.error('Could not find timeline chart canvas');
+                return;
+            }
+            
+            if (timelineChart instanceof Chart) {
+                timelineChart.destroy();
+            }
+            
+            timelineChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [
+                        {
+                            label: 'Positive',
+                            data: data.positive,
+                            borderColor: 'rgb(80, 250, 123)',
+                            backgroundColor: 'rgba(80, 250, 123, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'Negative',
+                            data: data.negative,
+                            borderColor: 'rgb(255, 85, 85)',
+                            backgroundColor: 'rgba(255, 85, 85, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'Neutral',
+                            data: data.neutral,
+                            borderColor: 'rgb(189, 147, 249)',
+                            backgroundColor: 'rgba(189, 147, 249, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Confidence %',
+                                color: 'var(--text-color)',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: 'var(--text-color)',
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: 'var(--text-color)'
+                            },
+                            title: {
+                                display: true,
+                                text: 'Time',
+                                color: 'var(--text-color)',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: 'var(--text-color)',
+                                font: {
+                                    size: 12
+                                },
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: '#282a36',
+                            titleColor: '#f8f8f2',
+                            bodyColor: '#f8f8f2',
+                            borderColor: '#44475a',
+                            borderWidth: 1,
+                            padding: 12,
+                            cornerRadius: 8,
+                            titleFont: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 13
+                            },
+                            displayColors: true,
+                            boxPadding: 6,
+                            callbacks: {
+                                title: function(tooltipItems) {
+                                    return 'Time: ' + tooltipItems[0].label;
+                                },
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.parsed.y.toFixed(1) + '% confidence';
+                                }
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'nearest',
+                        axis: 'x',
+                        intersect: false
+                    }
+                }
+            });
+        }
+
+        // Initialize with daily data
+        initTimelineChart('daily');
+
+        // Handle time range changes
+        const timeRangeFilter = document.getElementById('timeRangeFilter');
+        if (timeRangeFilter) {
+            timeRangeFilter.addEventListener('change', function() {
+                initTimelineChart(this.value);
+            });
+        }
+
+        // Word cloud data
+        console.log('Parsing word cloud data...');
+        const wordCloudData = {{ word_clouds|tojson|safe }};
+        console.log('Word cloud data:', wordCloudData);
+        
+        // Function to create a word cloud
+        function createWordCloud(words, containerId, color) {
+            console.log(`Creating word cloud for ${containerId} with words:`, words);
+            const container = document.getElementById(containerId);
+            if (!container) {
+                console.error(`Container ${containerId} not found`);
+                return;
+            }
+            
+            // Clear any existing content
+            container.innerHTML = '';
+            
+            const width = container.offsetWidth || 300;  // Fallback width if offsetWidth is 0
+            const height = 200;
+            
+            // Convert word frequency object to array of objects
+            const wordArray = Object.entries(words || {}).map(([text, size]) => ({
+                text,
+                size: Math.max(12, Math.min(50, 12 + (size * 3))) // Adjusted scaling for better visibility
+            }));
+            
+            console.log(`Word array for ${containerId}:`, wordArray);
+            
+            if (wordArray.length === 0) {
+                container.innerHTML = '<div class="no-data" style="text-align: center; color: var(--text-muted);">No data available</div>';
+                return;
+            }
+            
+            // Create the word cloud layout
+            d3.layout.cloud()
+                .size([width, height])
+                .words(wordArray)
+                .padding(5)
+                .rotate(() => 0)
+                .fontSize(d => d.size)
+                .on("end", words => {
+                    // Remove any existing SVG
+                    d3.select(`#${containerId}`).selectAll("svg").remove();
+                    
+                    // Create new SVG
+                    const svg = d3.select(`#${containerId}`)
+                        .append("svg")
+                        .attr("width", width)
+                        .attr("height", height);
+                    
+                    // Create a group element for the words
+                    const wordsGroup = svg.append("g")
+                        .attr("transform", `translate(${width/2},${height/2})`);
+                    
+                    // Add words
+                    wordsGroup.selectAll("text")
+                        .data(words)
+                        .enter()
+                        .append("text")
+                        .style("font-size", d => `${d.size}px`)
+                        .style("fill", color)
+                        .attr("text-anchor", "middle")
+                        .attr("transform", d => `translate(${d.x},${d.y})`)
+                        .text(d => d.text);
+                })
+                .start();
+        }
+        
+        // Create word clouds for each sentiment
+        createWordCloud(wordCloudData.positive, 'positiveCloud', 'rgb(80, 250, 123)');
+        createWordCloud(wordCloudData.negative, 'negativeCloud', 'rgb(255, 85, 85)');
+        createWordCloud(wordCloudData.neutral, 'neutralCloud', 'rgb(189, 147, 249)');
+        
+    } catch (error) {
+        console.error('Error initializing details page:', error);
+    }
+});
+</script>
+{% endblock %} 

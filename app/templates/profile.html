@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-picture-container">
+            <img src="{{ profile_picture or 'https://ui-avatars.com/api/?name=' + username }}" alt="Profile Picture" class="profile-picture">
+            <label for="profile-picture-input" class="profile-picture-upload">
+                <i class="fas fa-camera"></i>
+            </label>
+            <input type="file" id="profile-picture-input" accept="image/*" style="display: none;">
+        </div>
+        
+        <div class="profile-info">
+            <h1>{{ username }}</h1>
+            <p>{{ email }}</p>
+            <div class="membership-badge {% if subscription_type == 'premium' %}premium{% else %}basic{% endif %}">
+                <i class="fas {% if subscription_type == 'premium' %}fa-crown{% else %}fa-user{% endif %}"></i>
+                {{ subscription_type|title }} Member
+                <span class="membership-duration">• {{ membership_duration }} days</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-bio">
+        <h2>Bio</h2>
+        <textarea class="bio-textarea" placeholder="Tell us about yourself...">{{ bio }}</textarea>
+        <button class="account-btn" onclick="saveBio()">
+            <i class="fas fa-save"></i>
+            Save Bio
+        </button>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value">{{ total_analyses }}</div>
+            <div class="stat-label">Total Analyses</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ positive_count }}</div>
+            <div class="stat-label">Positive Sentiments</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ negative_count }}</div>
+            <div class="stat-label">Negative Sentiments</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ neutral_count }}</div>
+            <div class="stat-label">Neutral Sentiments</div>
+        </div>
+    </div>
+
+    <div class="account-management">
+        <h2>Account Management</h2>
+        <div class="account-buttons">
+            <a href="{{ url_for('auth.change_password') }}" class="account-btn">
+                <i class="fas fa-key"></i>
+                Change Password
+            </a>
+            {% if subscription_type == 'basic' %}
+            <a href="{{ url_for('auth.upgrade_premium') }}" class="account-btn">
+                <i class="fas fa-crown"></i>
+                Upgrade to Premium
+            </a>
+            {% else %}
+            <a href="{{ url_for('auth.cancel_premium') }}" class="account-btn">
+                <i class="fas fa-arrow-down"></i>
+                Cancel Premium
+            </a>
+            {% endif %}
+            <a href="{{ url_for('main.settings') }}" class="account-btn">
+                <i class="fas fa-question-circle"></i>
+                Help & Support
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+// Add toast notification function
+function showToast(title, message, type = 'info') {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `
+        <div class="toast-header">
+            <strong>${title}</strong>
+        </div>
+        <div class="toast-body">
+            ${message}
+        </div>
+    `;
+    
+    document.body.appendChild(toast);
+    
+    // Add styles
+    const style = document.createElement('style');
+    style.textContent = `
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            min-width: 250px;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+        }
+        .toast.success {
+            border-left: 4px solid #28a745;
+        }
+        .toast.error {
+            border-left: 4px solid #dc3545;
+        }
+        .toast.info {
+            border-left: 4px solid #17a2b8;
+        }
+        .toast-header {
+            padding: 8px 12px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        .toast-body {
+            padding: 12px;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Remove toast after 3 seconds
+    setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s ease-in';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+// Profile picture upload handling
+document.getElementById('profile-picture-input').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        showToast('Error', 'File size must be less than 5MB', 'error');
+        return;
+    }
+
+    // Validate file type
+    const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!validTypes.includes(file.type)) {
+        showToast('Error', 'Invalid file type. Please upload a JPEG, PNG, or GIF image.', 'error');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('profile_picture', file);
+
+    fetch('/api/update-profile-picture', {
+        method: 'POST',
+        body: formData,
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(data => {
+                throw new Error(data.message || 'Failed to update profile picture');
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            document.querySelector('.profile-picture').src = data.url;
+            showToast('Success', 'Profile picture updated successfully', 'success');
+        } else {
+            showToast('Error', data.message || 'Failed to update profile picture', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('Error', error.message || 'Failed to update profile picture', 'error');
+    });
+});
+
+// Bio update handling
+function saveBio() {
+    const bio = document.querySelector('.bio-textarea').value;
+    
+    if (!bio.trim()) {
+        showToast('Error', 'Please enter a bio before saving.', 'error');
+        return;
+    }
+    
+    fetch('/api/update-bio', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ bio: bio }),
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(data => {
+                throw new Error(data.message || 'Failed to update bio');
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            showToast('Success', 'Bio updated successfully', 'success');
+        } else {
+            showToast('Error', data.message || 'Failed to update bio', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('Error', error.message || 'Failed to update bio', 'error');
+    });
+}
+</script>
+{% endblock %} 

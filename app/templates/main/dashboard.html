@@ -1,0 +1,439 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-page">
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1>Welcome, {{ current_user.username }}</h1>
+            <div class="subscription-info">
+                <div class="current-plan">
+                    Current Plan: 
+                    <span class="plan-badge {{ current_user.subscription_type }}">
+                        {{ current_user.subscription_type|title }}
+                    </span>
+                </div>
+                {% if current_user.subscription_type == 'basic' %}
+                    <a href="{{ url_for('auth.upgrade_premium') }}" class="btn btn-upgrade">Upgrade to Premium</a>
+                {% else %}
+                    <a href="{{ url_for('auth.cancel_premium') }}" class="btn btn-cancel">Cancel Premium</a>
+                {% endif %}
+                <a href="{{ url_for('auth.change_password') }}" class="btn btn-outline">Change Password</a>
+            </div>
+        </div>
+
+        {% if error %}
+        <div class="error-message">{{ error }}</div>
+        {% else %}
+        <div class="dashboard-grid">
+            <!-- First row: Overview and Distribution -->
+            <div class="dashboard-card">
+                <h2><i class="fas fa-chart-pie"></i> Sentiment Overview</h2>
+                <div class="overview-stats">
+                    <div class="stat-box">
+                        <h3>{{ sentiment_percentages.positive }}%</h3>
+                        <p>Positive</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>{{ sentiment_percentages.negative }}%</h3>
+                        <p>Negative</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>{{ sentiment_percentages.neutral }}%</h3>
+                        <p>Neutral</p>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <a href="{{ url_for('main.sentiment_details') }}" class="btn btn-primary">
+                        <i class="fas fa-chart-bar"></i>
+                        View Details</a>
+                    <a href="{{ url_for('main.export') }}" class="btn btn-primary">
+                        <i class="fas fa-file-export"></i>
+                        Export
+                    </a>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <h2><i class="fas fa-chart-bar"></i> Sentiment Distribution</h2>
+                <div class="donut-chart" style="--positive-stop: {{ sentiment_percentages.positive }}%; --negative-stop: {{ sentiment_percentages.positive + sentiment_percentages.negative }}%;">
+                    <div class="chart-center">
+                        <span class="percentage">{{ sentiment_percentages.positive }}%</span>
+                        <span class="label">Positive</span>
+                    </div>
+                </div>
+                <div class="chart-legend">
+                    <div class="legend-item">
+                        <div class="dot positive"></div>
+                        <span>Positive ({{ sentiment_percentages.positive }}%)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="dot negative"></div>
+                        <span>Negative ({{ sentiment_percentages.negative }}%)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="dot neutral"></div>
+                        <span>Neutral ({{ sentiment_percentages.neutral }}%)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-card radar-chart-container {% if current_user.subscription_type != 'premium' %}locked{% endif %}">
+                <h2><i class="fas fa-star"></i> Sentiment Radar Analysis</h2>
+                {% if current_user.subscription_type == 'premium' %}
+                    <div class="chart-wrapper" style="height: 350px; width: 100%; position: relative; padding: 5px 20px;">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                    <div class="premium-badge">
+                        <span>Premium</span>
+                    </div>
+                {% else %}
+                    <div class="lock-overlay">
+                        <i class="fas fa-lock"></i>
+                        <p>Premium Feature</p>
+                        <a href="{{ url_for('auth.upgrade_premium') }}" class="btn btn-upgrade">Upgrade to Premium</a>
+                    </div>
+                    <div class="chart-wrapper" style="height: 350px; width: 100%; position: relative; padding: 5px 20px;">
+                        <canvas id="radarChart" class="blurred"></canvas>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Second row: Trends -->
+            <div class="dashboard-card full-width">
+                <div class="chart-header">
+                    <h2>Sentiment Trends</h2>
+                    <select id="timeRangeFilter" class="chart-filter">
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                    </select>
+                </div>
+                <div class="timeline-chart">
+                    <canvas id="trendChart"></canvas>
+                    <div class="chart-header">
+                        <h4 id="confidence-label">Confidence</h4>
+                        <h4 id="time-label">Time</h4>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Third row: Recent Responses -->
+            <div class="dashboard-card full-width">
+                <h2><i class="fas fa-clock"></i> Recent Analyses</h2>
+                <div class="responses-grid">
+                    {% for response in recent_responses %}
+                    <div class="response-card {{ response.sentiment }}">
+                        <div class="response-header">
+                            <span class="sentiment-tag">{{ response.sentiment|title }}</span>
+                            <span class="response-date">{{ response.created_at }}</span>
+                        </div>
+                        <p class="response-text">{{ response.tweet_text }}</p>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" style="width: {{ response.confidence * 100 }}%"></div>
+                            <span class="confidence-text">{{ (response.confidence * 100)|round(1) }}% confidence</span>
+                        </div>
+                    </div>
+                    {% else %}
+                    <p class="no-data">No analyses yet. Try analyzing some tweets!</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const radarCtx = document.getElementById('radarChart');
+    if (radarCtx) {
+        const radarMetrics = {{ radar_metrics|safe }};
+        new Chart(radarCtx, {
+            type: 'radar',
+            data: {
+                labels: [
+                    'Positive',
+                    'Negative',
+                    'Neutral'
+                ],
+                datasets: [{
+                    label: 'Sentiment Distribution',
+                    data: [
+                        radarMetrics.positive,
+                        radarMetrics.negative,
+                        radarMetrics.neutral
+                    ],
+                    backgroundColor: 'rgba(189, 147, 249, 0.3)',
+                    borderColor: 'rgb(189, 147, 249)',
+                    borderWidth: 3,
+                    pointBackgroundColor: 'rgb(189, 147, 249)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: 'rgb(189, 147, 249)',
+                    pointHoverBorderColor: '#fff',
+                    pointRadius: 6,
+                    pointHoverRadius: 9,
+                    pointBorderWidth: 2,
+                    hoverBorderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100,
+                        min: 0,
+                        ticks: {
+                            stepSize: 20,
+                            color: 'var(--text-color)',
+                            backdropColor: 'transparent',
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            },
+                            showLabelBackdrop: false,
+                            z: 1,
+                            count: 5
+                        },
+                        grid: {
+                            color: 'rgba(158, 158, 158, 0.4)',
+                            lineWidth: 1.5,
+                            circular: false,
+                            display: true
+                        },
+                        angleLines: {
+                            color: 'rgba(158, 158, 158, 0.4)',
+                            lineWidth: 2,
+                            display: true
+                        },
+                        pointLabels: {
+                            color: 'var(--text-color)',
+                            font: {
+                                size: 16,
+                                weight: 'bold',
+                                family: "'Inter', sans-serif"
+                            },
+                            padding: 20,
+                            centerPointLabels: false,
+                            textAlign: 'center',
+                            callback: function(value) {
+                                const metrics = {
+                                    'Positive': radarMetrics.positive.toFixed(1),
+                                    'Negative': radarMetrics.negative.toFixed(1),
+                                    'Neutral': radarMetrics.neutral.toFixed(1)
+                                };
+                                return [`${value}`, `(${metrics[value]}%)`];
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: true,
+                        position: 'nearest',
+                        backgroundColor: 'rgba(40, 42, 54, 0.98)',
+                        titleColor: '#f8f8f2',
+                        bodyColor: '#f8f8f2',
+                        borderColor: 'rgb(189, 147, 249)',
+                        borderWidth: 2,
+                        padding: {
+                            top: 12,
+                            right: 16,
+                            bottom: 12,
+                            left: 16
+                        },
+                        cornerRadius: 8,
+                        titleFont: {
+                            size: 15,
+                            weight: 'bold',
+                            family: "'Inter', sans-serif"
+                        },
+                        bodyFont: {
+                            size: 14,
+                            family: "'Inter', sans-serif"
+                        },
+                        displayColors: false,
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                return tooltipItems[0].label;
+                            },
+                            label: function(context) {
+                                return 'Distribution: ' + context.raw.toFixed(1) + '%';
+                            }
+                        }
+                    }
+                },
+                hover: {
+                    mode: 'nearest',
+                    intersect: true
+                },
+                elements: {
+                    line: {
+                        tension: 0
+                    }
+                }
+            }
+        });
+    }
+});
+
+// Initialize trend chart with real data
+const trendData = {{ trend_data|safe }};
+
+function initTrendChart(timeRange) {
+    const data = trendData[timeRange];
+    const ctx = document.getElementById('trendChart').getContext('2d');
+    
+    if (window.trendChart) {
+        window.trendChart.destroy();
+    }
+    
+    window.trendChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data.labels,
+            datasets: [
+                {
+                    label: 'Positive',
+                    data: data.positive,
+                    borderColor: 'rgb(80, 250, 123)',
+                    backgroundColor: 'rgba(80, 250, 123, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true
+                },
+                {
+                    label: 'Negative',
+                    data: data.negative,
+                    borderColor: 'rgb(255, 85, 85)',
+                    backgroundColor: 'rgba(255, 85, 85, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true
+                },
+                {
+                    label: 'Neutral',
+                    data: data.neutral,
+                    borderColor: 'rgb(189, 147, 249)',
+                    backgroundColor: 'rgba(189, 147, 249, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    title: {
+                        display: true,
+                        text: 'Confidence',
+                        color: 'var(--text-color)',
+                        font: {
+                            size: 14,
+                            weight: 'bold'
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: 'var(--text-color)',
+                        callback: function(value) {
+                            return value + '%';
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: 'var(--text-color)'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Time',
+                        color: 'var(--text-color)',
+                        font: {
+                            size: 14,
+                            weight: 'bold'
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        color: 'var(--text-color)',
+                        font: {
+                            size: 12
+                        },
+                        usePointStyle: true,
+                        pointStyle: 'circle'
+                    }
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    backgroundColor: '#282a36',
+                    titleColor: '#f8f8f2',
+                    bodyColor: '#f8f8f2',
+                    borderColor: '#44475a',
+                    borderWidth: 1,
+                    padding: 12,
+                    cornerRadius: 8,
+                    titleFont: {
+                        size: 14,
+                        weight: 'bold'
+                    },
+                    bodyFont: {
+                        size: 13
+                    },
+                    displayColors: true,
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            return 'Time: ' + tooltipItems[0].label;
+                        },
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.parsed.y.toFixed(1) + '% confidence';
+                        }
+                    }
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            }
+        }
+    });
+}
+
+// Initialize with daily data
+initTrendChart('daily');
+
+// Handle time range changes
+document.getElementById('timeRangeFilter').addEventListener('change', function() {
+    initTrendChart(this.value);
+});
+</script>
+{% endblock %} 
