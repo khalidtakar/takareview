@@ -184,22 +184,36 @@ def upgrade_premium():
 def change_password():
     form = ChangePasswordForm()
     if form.validate_on_submit():
-        user = User.get_by_id(current_user.id)
-        if user and user.check_password(form.current_password.data):
-            try:
-                response = supabase.table('user').update(
-                    {"password_hash": generate_password_hash(form.new_password.data)}
-                ).eq("id", current_user.id).execute()
-                
-                if response.data:
-                    flash('Your password has been updated!', 'success')
-                    return redirect(url_for('main.dashboard'))
-                
+        try:
+            # Get current user
+            user = User.get_by_id(current_user.id)
+            if not user:
+                flash('User not found.', 'error')
+                return render_template('auth/change_password.html', form=form)
+
+            # Verify current password
+            if not user.check_password(form.current_password.data):
+                flash('Current password is incorrect.', 'error')
+                return render_template('auth/change_password.html', form=form)
+
+            # Update password using the new method
+            if user.update_password(form.new_password.data):
+                flash('Your password has been updated successfully!', 'success')
+                return redirect(url_for('main.dashboard'))
+            else:
                 flash('Failed to update password. Please try again.', 'error')
-            except Exception as e:
-                flash(f'Failed to update password: {str(e)}', 'error')
-        else:
-            flash('Current password is incorrect.', 'error')
+
+        except Exception as e:
+            print(f"Password update error: {str(e)}")
+            print(traceback.format_exc())
+            flash('An error occurred while updating your password. Please try again.', 'error')
+
+    # If form validation failed
+    if form.errors:
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(f'{field}: {error}', 'error')
+
     return render_template('auth/change_password.html', form=form)
 
 @auth_bp.route('/reset_password', methods=['GET', 'POST'])
@@ -209,26 +223,29 @@ def reset_password():
     
     form = ResetPasswordForm()
     if form.validate_on_submit():
-        user = User.get_by_email(form.email.data)
-        if user:
-            try:
-                # Update password in database
-                hashed_password = generate_password_hash(form.password.data)
-                response = supabase.table('user').update(
-                    {"password_hash": hashed_password}
-                ).eq("id", user.id).execute()
-                
-                if response.data:
-                    flash('Your password has been updated! You can now log in with your new password.', 'success')
-                    return redirect(url_for('auth.login'))
-                
-                flash('Failed to update password. Please try again.', 'error')
-            except Exception as e:
-                print(f"Error updating password: {str(e)}")
-                flash('An error occurred. Please try again.', 'error')
-        else:
-            flash('No account found with that email address.', 'error')
-        
-        return redirect(url_for('auth.reset_password'))
-    
+        try:
+            # Get user by email
+            user = User.get_by_email(form.email.data)
+            if not user:
+                flash('No account found with that email address.', 'error')
+                return render_template('auth/reset_password.html', form=form)
+
+            # Update password using the new method
+            if user.update_password(form.password.data):
+                flash('Your password has been reset successfully! You can now log in with your new password.', 'success')
+                return redirect(url_for('auth.login'))
+            else:
+                flash('Failed to reset password. Please try again.', 'error')
+
+        except Exception as e:
+            print(f"Password reset error: {str(e)}")
+            print(traceback.format_exc())
+            flash('An error occurred while resetting your password. Please try again.', 'error')
+
+    # If form validation failed
+    if form.errors:
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(f'{field}: {error}', 'error')
+
     return render_template('auth/reset_password.html', title='Reset Password', form=form) 

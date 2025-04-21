@@ -1,0 +1,10 @@
+{% macro premium_feature(title='Premium Feature') %}
+<div class="premium-feature-overlay">
+    <div class="premium-content">
+        <i class="fas fa-lock premium-lock"></i>
+        <h3>{{ title }}</h3>
+        <p>Upgrade to Premium to unlock this feature</p>
+        <a href="{{ url_for('auth.upgrade_premium') }}" class="btn btn-premium">Upgrade to Premium</a>
+    </div>
+</div>
+{% endmacro %} 

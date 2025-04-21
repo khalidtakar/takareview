@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from 'components/premium_feature.html' import premium_feature %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/details.css') }}">
@@ -75,23 +76,41 @@
             </div>
         </div>
 
-         <!-- Word Clouds -->
-         <div class="details-card full-width">
+        <!-- Common Words by Sentiment Section -->
+        <div class="details-card premium-container full-width">
             <h2><i class="fas fa-cloud"></i> Common Words by Sentiment</h2>
-            <div class="word-clouds-container">
-                <div class="word-cloud-section">
+            {% if current_user.subscription_type == 'premium' %}
+            <div class="common-words-container">
+                <div class="word-group">
                     <h3>Positive Words</h3>
-                    <div class="word-cloud positive-cloud" id="positiveCloud"></div>
+                    <div class="word-cloud" id="positiveCloud"></div>
                 </div>
-                <div class="word-cloud-section">
+                <div class="word-group">
                     <h3>Negative Words</h3>
-                    <div class="word-cloud negative-cloud" id="negativeCloud"></div>
+                    <div class="word-cloud" id="negativeCloud"></div>
                 </div>
-                <div class="word-cloud-section">
+                <div class="word-group">
                     <h3>Neutral Words</h3>
-                    <div class="word-cloud neutral-cloud" id="neutralCloud"></div>
+                    <div class="word-cloud" id="neutralCloud"></div>
                 </div>
             </div>
+            {% else %}
+            <div class="common-words-container blur-content">
+                <div class="word-group">
+                    <h3>Positive Words</h3>
+                    <div class="word-cloud" id="positiveCloud"></div>
+                </div>
+                <div class="word-group">
+                    <h3>Negative Words</h3>
+                    <div class="word-cloud" id="negativeCloud"></div>
+                </div>
+                <div class="word-group">
+                    <h3>Neutral Words</h3>
+                    <div class="word-cloud" id="neutralCloud"></div>
+                </div>
+            </div>
+            {{ premium_feature('Common Words Analysis') }}
+            {% endif %}
         </div>
 
         <!-- Timeline Analysis -->
@@ -138,9 +157,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 labels: ['Positive', 'Negative', 'Neutral'],
                 datasets: [{
                     data: [
-                        {{ sentiment_percentages.positive }},
-                        {{ sentiment_percentages.negative }},
-                        {{ sentiment_percentages.neutral }}
+                        parseFloat("{{ sentiment_percentages.positive }}"),
+                        parseFloat("{{ sentiment_percentages.negative }}"),
+                        parseFloat("{{ sentiment_percentages.neutral }}")
                     ],
                     backgroundColor: [
                         'rgb(80, 250, 123)',
@@ -164,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Initialize timeline chart
         console.log('Parsing trend data...');
-        const trendData = {{ trend_data|tojson|safe }};
+        const trendData = JSON.parse('{{ trend_data|tojson|safe }}');
         console.log('Trend data:', trendData);
         let timelineChart = null;
 
@@ -328,7 +347,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Word cloud data
         console.log('Parsing word cloud data...');
-        const wordCloudData = {{ word_clouds|tojson|safe }};
+        const wordCloudData = JSON.parse('{{ word_clouds|tojson|safe }}');
         console.log('Word cloud data:', wordCloudData);
         
         // Function to create a word cloud

@@ -1,12 +1,14 @@
 {% extends "base.html" %}
+{% from 'components/premium_feature.html' import premium_feature %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
 {% endblock %}
 
 {% block content %}
-<div class="chat-page">
+<div class="chat-page premium-container">
     <div class="chat-container">
+        {% if current_user.subscription_type == 'premium' %}
         <div class="chat-header">
             <h2>AI Chat Assistant</h2>
             <button id="viewDetailedAnalysis" class="btn-primary">
@@ -29,6 +31,32 @@
                 <i class="fas fa-paper-plane"></i> Send
             </button>
         </form>
+        {% else %}
+
+        <div class="chat-header blur-content">
+            <h2>AI Chat Assistant</h2>
+            <button id="viewDetailedAnalysis" class="btn-primary">
+                <i class="fas fa-table"></i> View Detailed Analysis
+            </button>
+        </div>
+        
+        <div class="chat-messages blur-content">
+            <!-- Welcome message -->
+            <div class="message assistant-message">
+                <div class="message-content">
+                    <p>Hello! I'm Takar, your AI assistant. I can help you understand your sentiment analysis results and provide detailed insights about your social media posts. Feel free to ask me anything!</p>
+                </div>
+            </div>
+        </div>
+        
+        <form id="chatForm" class="chat-input-container blur-content">
+            <input type="text" id="messageInput" placeholder="Ask me anything about your sentiment analysis..." disabled>
+            <button type="submit" class="btn-send" disabled>
+                <i class="fas fa-paper-plane"></i> Send
+            </button>
+        </form>
+        {{ premium_feature('AI Chat Assistant') }}
+        {% endif %}
     </div>
 
     <!-- Detailed Analysis Modal -->
