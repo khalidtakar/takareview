@@ -223,4 +223,25 @@ class User(UserMixin):
         except Exception as e:
             print(f"Error updating subscription: {str(e)}")
             traceback.print_exc()
+            return False
+
+    def update_password(self, new_password):
+        """Update the user's password in the database."""
+        try:
+            print(f"Attempting to update password for user {self.id}")
+            new_password_hash = generate_password_hash(new_password)
+            
+            response = supabase.table('user').update({
+                'password_hash': new_password_hash
+            }).eq('id', self.id).execute()
+            
+            print(f"Response from update_password: {response.data}")
+            
+            if response.data and len(response.data) > 0:
+                self.password_hash = new_password_hash
+                return True
+            return False
+        except Exception as e:
+            print(f"Error updating password: {str(e)}")
+            traceback.print_exc()
             return False 
