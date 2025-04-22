@@ -57,6 +57,7 @@ TakaReview is a powerful web-based sentiment analysis dashboard designed specifi
 - **ML Model**: CardiffNLP Twitter RoBERTa Base Sentiment Model
 - **APIs**: Twitter, YouTube, Reddit
 - **Storage**: Supabase Storage for profile pictures
+- **Deployment**: Heroku
 
 ## 📦 Project Structure
 
@@ -221,7 +222,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the BSc Computer Science License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
@@ -262,7 +263,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Phase 4: Integration & Testing (Week 7-8)
 
 - [x] Error handling and rate limiting
-- [ ] Basic unit tests
+- [x] refined unit tests
 - [x] UI/UX refinements
 
 ## MVP Success Criteria
@@ -279,3 +280,25 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Advanced analytics
 - LLM-powered chatbot
 - Premium features
+
+## Running Tests
+
+To run the test suite:
+
+```bash
+# Install test dependencies
+pip install pytest
+
+# Run all tests
+pytest tests/
+
+# Run specific test file
+pytest tests/test_app.py
+
+# Run tests with verbose output
+pytest tests/test_app.py -v
+```
+
+## OneDrive Submission Link
+
+[Click here to access the project submission](https://github.com/khalidtakar/takareview.git)
